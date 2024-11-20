@@ -10,9 +10,9 @@ export const searchArtists = async (
 ) => {
   setLoading(true);
   try {
-    const response = await axios.get("https://musicbrainz.org/ws/2/artist", {
+    const response = await axios.get(process.env.REACT_APP_MUSIC_API, {
       params: {
-        query: cityName,
+        query: `${cityName} AND begin:[2014-01-01 TO 2024-12-31]`,
         fmt: "json",
         limit: itemsPerPage,
         offset: pageNum,

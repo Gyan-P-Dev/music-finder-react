@@ -21,21 +21,30 @@ function ArtistTable({ artistData, loading, onSearch, city, totalArtists }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  const totalPages = Math.ceil(totalArtists / itemsPerPage);
+
   const goToNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
-    onSearch(city, currentPage + 1, itemsPerPage);
+    if (currentPage < totalPages - 1) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      onSearch(city, newPage * itemsPerPage, itemsPerPage);
+    }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
-      onSearch(city, currentPage - 1, itemsPerPage);
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      onSearch(city, newPage * itemsPerPage, itemsPerPage);
     }
   };
 
-  const totalPages = Math.ceil(totalArtists / itemsPerPage);
-  const isNextDisabled = currentPage >= totalPages - 1;
-  const isPrevDisabled = currentPage <= 0;
+  const handleLimitChange = (e) => {
+    const newLimit = Number(e.target.value);
+    setItemsPerPage(newLimit);
+    setCurrentPage(0);
+    onSearch(city, 0, newLimit);
+  };
 
   return (
     <TableContainer>
@@ -76,7 +85,7 @@ function ArtistTable({ artistData, loading, onSearch, city, totalArtists }) {
           >
             <Button
               variant="contained"
-              disabled={isPrevDisabled}
+              disabled={currentPage <= 0}
               onClick={goToPrevPage}
               sx={{
                 backgroundColor: "#FF5722",
@@ -87,11 +96,11 @@ function ArtistTable({ artistData, loading, onSearch, city, totalArtists }) {
               Previous
             </Button>
             <Typography variant="body1" sx={{ margin: "0 10px" }}>
-              Page: {currentPage + 1}
+              Page: {currentPage + 1} / {totalPages}
             </Typography>
             <Button
               variant="contained"
-              disabled={isNextDisabled}
+              disabled={currentPage >= totalPages - 1}
               onClick={goToNextPage}
               sx={{ backgroundColor: "#FF5722", color: "white" }}
             >
@@ -99,14 +108,11 @@ function ArtistTable({ artistData, loading, onSearch, city, totalArtists }) {
             </Button>
           </Box>
 
-          <FormControl variant="outlined" size="small">
+          <FormControl variant="outlined" size="small" sx={{ marginTop: 2 }}>
             <InputLabel>Items per page</InputLabel>
             <Select
               value={itemsPerPage}
-              onChange={(e) => {
-                onSearch(city, currentPage, Number(e.target.value));
-                setItemsPerPage(Number(e.target.value));
-              }}
+              onChange={handleLimitChange}
               label="Items per page"
             >
               <MenuItem value={10}>10</MenuItem>
