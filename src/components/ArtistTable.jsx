@@ -124,7 +124,9 @@ function ArtistTable({ artistData, loading, onSearch, city, totalArtists }) {
       ) : loading ? (
         <LoadingIndicator message="Loading..." />
       ) : (
-        <LoadingIndicator message="No results found" />
+        <Typography variant="h6" color="textSecondary">
+          No results found
+        </Typography>
       )}
     </TableContainer>
   );
