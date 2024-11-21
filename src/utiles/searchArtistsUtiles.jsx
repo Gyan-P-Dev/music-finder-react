@@ -10,9 +10,10 @@ export const searchArtists = async (
 ) => {
   setLoading(true);
   try {
+    let foundedSince = new Date().getFullYear() - 10;
     const response = await axios.get(process.env.REACT_APP_MUSIC_API, {
       params: {
-        query: `${cityName} AND begin:[2014-01-01 TO 2024-12-31]`,
+        query: `area:${cityName} AND begin:[${foundedSince} TO *]`,
         fmt: "json",
         limit: itemsPerPage,
         offset: pageNum,
